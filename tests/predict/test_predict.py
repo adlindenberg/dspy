@@ -43,7 +43,7 @@ def test_lm_after_dump_and_load_state():
         model="openai/gpt-4o-mini",
         model_type="chat",
         temperature=1,
-        max_tokens=100,
+        max_completion_tokens=100,
         num_retries=10,
     )
     predict_instance.lm = lm
@@ -51,7 +51,7 @@ def test_lm_after_dump_and_load_state():
         "model": "openai/gpt-4o-mini",
         "model_type": "chat",
         "temperature": 1,
-        "max_tokens": 100,
+        "max_completion_tokens": 100,
         "num_retries": 10,
         "cache": True,
         "cache_in_memory": True,
@@ -241,7 +241,7 @@ def test_lm_field_after_dump_and_load_state(tmp_path, filename):
         model="openai/gpt-4o-mini",
         model_type="chat",
         temperature=1,
-        max_tokens=100,
+        max_completion_tokens=100,
         num_retries=10,
     )
     original_predict = dspy.Predict("q->a")

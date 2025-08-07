@@ -41,11 +41,11 @@ class BaseLM:
     ```
     """
 
-    def __init__(self, model, model_type="chat", temperature=0.0, max_tokens=1000, cache=True, **kwargs):
+    def __init__(self, model, model_type="chat", temperature=0.0, max_completion_tokens=1000, cache=True, **kwargs):
         self.model = model
         self.model_type = model_type
         self.cache = cache
-        self.kwargs = dict(temperature=temperature, max_tokens=max_tokens, **kwargs)
+        self.kwargs = dict(temperature=temperature, max_completion_tokens=max_completion_tokens, **kwargs)
         self.history = []
 
     def _process_lm_response(self, response, prompt, messages, **kwargs):

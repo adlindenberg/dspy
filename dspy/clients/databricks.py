@@ -150,10 +150,10 @@ class DatabricksProvider(Provider):
             try:
                 if data_format == TrainDataFormat.CHAT:
                     client.chat.completions.create(
-                        messages=[{"role": "user", "content": "hi"}], model=model_name, max_tokens=1
+                        messages=[{"role": "user", "content": "hi"}], model=model_name, max_completion_tokens=1
                     )
                 elif data_format == TrainDataFormat.COMPLETION:
-                    client.completions.create(prompt="hi", model=model_name, max_tokens=1)
+                    client.completions.create(prompt="hi", model=model_name, max_completion_tokens=1)
                 logger.info(f"Databricks model serving endpoint {model_name} is ready!")
                 return
             except Exception:

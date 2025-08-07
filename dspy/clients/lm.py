@@ -31,7 +31,7 @@ class LM(BaseLM):
         model: str,
         model_type: Literal["chat", "text"] = "chat",
         temperature: float = 0.0,
-        max_tokens: int = 4000,
+        max_completion_tokens: int = 4000,
         cache: bool = True,
         cache_in_memory: bool = True,
         callbacks: list[BaseCallback] | None = None,
@@ -50,7 +50,7 @@ class LM(BaseLM):
                    supported by LiteLLM. For example, ``"openai/gpt-4o"``.
             model_type: The type of the model, either ``"chat"`` or ``"text"``.
             temperature: The sampling temperature to use when generating responses.
-            max_tokens: The maximum number of tokens to generate per response.
+            max_completion_tokens: The maximum number of tokens to generate per response.
             cache: Whether to cache the model responses for reuse to improve performance
                    and reduce costs.
             cache_in_memory (deprecated): To enable additional caching with LRU in memory.
@@ -85,16 +85,16 @@ class LM(BaseLM):
         if model_pattern:
             # Handle OpenAI reasoning models (o1, o3)
             assert (
-                max_tokens >= 20_000 and temperature == 1.0
-            ), "OpenAI's reasoning models require passing temperature=1.0 and max_tokens >= 20_000 to `dspy.LM(...)`"
-            self.kwargs = dict(temperature=temperature, max_completion_tokens=max_tokens, **kwargs)
+                max_completion_tokens >= 20_000 and temperature == 1.0
+            ), "OpenAI's reasoning models require passing temperature=1.0 and max_completion_tokens >= 20_000 to `dspy.LM(...)`"
+            self.kwargs = dict(temperature=temperature, max_completion_tokens=max_completion_tokens, **kwargs)
         elif "gpt-5" in model_family:
             print('GPT 5 MODEL FAMILY')
-            kwargs.pop('max_tokens', None)
-            max_tokens = kwargs.pop("max_completion_tokens", max_tokens)
-            self.kwargs = dict(temperature=1.0, max_completion_tokens=max_tokens, **kwargs)
+            kwargs.pop('max_completion_tokens', None)
+            max_completion_tokens = kwargs.pop("max_completion_tokens", max_completion_tokens)
+            self.kwargs = dict(temperature=1.0, max_completion_tokens=max_completion_tokens, **kwargs)
         else:
-            self.kwargs = dict(temperature=temperature, max_tokens=max_tokens, **kwargs)
+            self.kwargs = dict(temperature=temperature, max_completion_tokens=max_completion_tokens, **kwargs)
 
     def _get_cached_completion_fn(self, completion_fn, cache, enable_memory_cache):
         ignored_args_for_cache_key = ["api_key", "api_base", "base_url"]
@@ -138,9 +138,9 @@ class LM(BaseLM):
 
         if any(c.finish_reason == "length" for c in results["choices"]):
             logger.warning(
-                f"LM response was truncated due to exceeding max_tokens={self.kwargs['max_tokens']}. "
+                f"LM response was truncated due to exceeding max_completion_tokens={self.kwargs['max_completion_tokens']}. "
                 "You can inspect the latest LM interactions with `dspy.inspect_history()`. "
-                "To avoid truncation, consider passing a larger max_tokens when setting up dspy.LM. "
+                "To avoid truncation, consider passing a larger max_completion_tokens when setting up dspy.LM. "
                 f"You may also consider increasing the temperature (currently {self.kwargs['temperature']}) "
                 " if the reason for truncation is repetition."
             )
@@ -168,9 +168,9 @@ class LM(BaseLM):
 
         if any(c.finish_reason == "length" for c in results["choices"]):
             logger.warning(
-                f"LM response was truncated due to exceeding max_tokens={self.kwargs['max_tokens']}. "
+                f"LM response was truncated due to exceeding max_completion_tokens={self.kwargs['max_completion_tokens']}. "
                 "You can inspect the latest LM interactions with `dspy.inspect_history()`. "
-                "To avoid truncation, consider passing a larger max_tokens when setting up dspy.LM. "
+                "To avoid truncation, consider passing a larger max_completion_tokens when setting up dspy.LM. "
                 f"You may also consider increasing the temperature (currently {self.kwargs['temperature']}) "
                 " if the reason for truncation is repetition."
             )
