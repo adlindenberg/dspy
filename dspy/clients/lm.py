@@ -88,6 +88,8 @@ class LM(BaseLM):
             ), "OpenAI's reasoning models require passing temperature=1.0 and max_tokens >= 20_000 to `dspy.LM(...)`"
             self.kwargs = dict(temperature=temperature, max_completion_tokens=max_tokens, **kwargs)
         elif "gpt-5" in model_family:
+            print('GPT 5 MODEL FAMILY')
+            kwargs.pop('max_tokens')
             max_tokens = kwargs.pop("max_completion_tokens", max_tokens)
             self.kwargs = dict(temperature=1.0, max_completion_tokens=max_tokens, **kwargs)
         else:
