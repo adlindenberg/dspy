@@ -77,6 +77,7 @@ class LM(BaseLM):
 
         # Handle model-specific configuration for different model families
         model_family = model.split("/")[-1].lower() if "/" in model else model.lower()
+        print(f'MODEL FAMILY IS {model_family}')
 
         # Match pattern: o[1,3,4] at the start, optionally followed by -mini and anything else
         model_pattern = re.match(r"^o([134])(?:-mini)?", model_family)
@@ -89,7 +90,7 @@ class LM(BaseLM):
             self.kwargs = dict(temperature=temperature, max_completion_tokens=max_tokens, **kwargs)
         elif "gpt-5" in model_family:
             print('GPT 5 MODEL FAMILY')
-            kwargs.pop('max_tokens')
+            kwargs.pop('max_tokens', None)
             max_tokens = kwargs.pop("max_completion_tokens", max_tokens)
             self.kwargs = dict(temperature=1.0, max_completion_tokens=max_tokens, **kwargs)
         else:
